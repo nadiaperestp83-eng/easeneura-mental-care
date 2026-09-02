@@ -1,4 +1,4 @@
-import 'package:ease_neura/screens/started_screen.dart';
+import 'package:ease_neura/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +17,11 @@ class MyApp extends StatelessWidget {
               seedColor: const Color.fromARGB(255, 255, 255, 255)),
           useMaterial3: true,
         ),
-        home: const StartedScreen(),
+        // TEMPORÁRIO: login desconectado, abrindo direto na Home pra você
+        // avaliar a situação. StartedScreen/SigninScreen continuam intactas
+        // no código — é só trocar esta linha de volta quando quiser
+        // reativar o fluxo de login.
+        home: const HomeScreen(),
         debugShowCheckedModeBanner: false);
   }
 }
