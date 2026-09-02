@@ -37,6 +37,7 @@ dependencies:
   flutter_spinkit: 5.2.0 # travado nessa versão: 5.2.1+ usa Color.withValues(), que exige Flutter mais novo que o 3.24.0 fixado no CI
   fluttertoast: ^8.0.8
   font_awesome_flutter: ^9.2.0
+  http: ^1.2.2
 
 
 dev_dependencies:
