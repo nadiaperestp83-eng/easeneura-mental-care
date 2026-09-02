@@ -1,4 +1,4 @@
-import 'package:ease_neura/screens/home_screen.dart';
+import 'package:ease_neura/screens/home_screen.dart' show HomePage;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         // avaliar a situação. StartedScreen/SigninScreen continuam intactas
         // no código — é só trocar esta linha de volta quando quiser
         // reativar o fluxo de login.
-        home: const HomeScreen(),
+        home: const HomePage(),
         debugShowCheckedModeBanner: false);
   }
 }
