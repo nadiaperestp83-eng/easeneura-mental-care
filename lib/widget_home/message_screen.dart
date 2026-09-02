@@ -9,12 +9,18 @@ class MessageScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Chat'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        automaticallyImplyLeading: false,
+        // Sem botão de voltar: esta tela agora vive como uma aba dentro do
+        // IndexedStack da HomePage, então não há rota anterior para dar pop
+        // (Navigator.pop aqui derrubaria a própria Home).
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            : null,
       ),
       body: Column(
         children: [
