@@ -1,5 +1,6 @@
 // Import statements
 import 'package:flutter/material.dart';
+import 'package:ease_neura/constants/layout_constants.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -8,7 +9,11 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(),
+      // Padding inferior (kPillNavBarClearance): garante que o conteúdo
+      // desta aba também termine acima da navbar flutuante, igual às
+      // demais abas do IndexedStack.
       body: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: kPillNavBarClearance),
         child: buildBody(context),
       ),
     );
