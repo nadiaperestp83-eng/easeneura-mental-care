@@ -1,879 +1,78 @@
-import 'dart:math';
-import 'package:ease_neura/widget_home/ai_helper.dart';
-import 'package:ease_neura/widget_home/consultation_screen.dart';
-import 'package:ease_neura/widget_home/maintenance.dart';
-import 'package:ease_neura/widget_home/history_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:ease_neura/screens/floral_guide_screen.dart';
 import 'package:ease_neura/widget_home/message_screen.dart';
 import 'package:ease_neura/widget_home/profile_screen.dart';
-import 'package:ease_neura/widget_home/thread_screen.dart';
-import 'package:ease_neura/widget_home/customer_services.dart';
-import 'package:ease_neura/screens/floral_guide_screen.dart';
-import 'package:ease_neura/widget_home/breathe_assistance_screen.dart';
-import 'package:ease_neura/widget_home/mood_tracker_screen.dart';
-import 'package:ease_neura/widget_home/volunteer_screen.dart';
 
-
-import 'package:flutter/material.dart';
-
-abstract class WidgetBase extends StatelessWidget {
-  final double? left;
-  final double? top;
-  final double? width;
-  final double? height;
-
-  const WidgetBase({
-    this.left,
-    this.top,
-    this.width,
-    this.height,
-    Key? key,
-  }) : super(key: key);
+/// Tela raiz do app depois do login.
+///
+/// Estrutura:
+/// - `_HomeTab`  -> conteúdo da Home (saudação, data, carrossel estilo iOS).
+/// - `IndexedStack` -> mantém as 4 abas (Home, Florais, Mensagens, Perfil)
+///   vivas ao mesmo tempo, então trocar de aba não reconstrói nem perde o
+///   estado de nenhuma delas (sem "piscadas" na tela).
+/// - Navbar flutuante em formato de pílula, sempre visível por cima do
+///   conteúdo (fica num `Stack`, não em `bottomNavigationBar`), então ela
+///   nunca some ao trocar de aba.
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context);
+  State<HomePage> createState() => _HomePageState();
 }
 
-class Profile extends StatelessWidget {
-  const Profile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: 22,
-      top: 60,
-      width: 50,
-      height: 50,
-      child: InkWell(
-        onTap: () {
-          // Navigasi ke halaman Maintenance
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ProfileScreen(),
-            ),
-          );
-        },
-        child: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: Colors.black,
-              width: 1,
-            ),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                left: 0,
-                top: 0,
-                width: 50,
-                height: 50,
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(45),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(0, 0, 0, 0.25),
-                        offset: Offset(0, 1),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Center(
-                child: Image.asset(
-                  'assets/images/man.png',
-                  width: 50,
-                  height: 40,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Calendar extends StatelessWidget {
-  const Calendar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      right: 30,
-      top: 70,
-      width: 39,
-      height: 14,
-      child: Text(
-        'April 3rd',
-        style: TextStyle(
-          fontSize: 10,
-          color: Colors.black.withOpacity(0.5),
-          fontFamily: 'Nunito-Regular',
-          letterSpacing: -0.22,
-        ),
-        textAlign: TextAlign.right,
-      ),
-    );
-  }
-}
-
-class Welcome extends StatelessWidget {
-  const Welcome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Positioned(
-      right: 30,
-      top: 85,
-      width: 200,
-      height: 22,
-      child: Text(
-        'Welcome, Clay!',
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.black,
-          fontFamily: 'Nunito-Bold',
-          letterSpacing: -0.35,
-          fontWeight: FontWeight.bold,
-        ),
-        textAlign: TextAlign.right,
-      ),
-    );
-  }
-}
-
-class SearchBar extends StatelessWidget {
-  const SearchBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      child: Container(
-        width: 381,
-        height: 45,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(100),
-          border: Border.all(
-            color: const Color(0xFF6D6D6D),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 13.0, right: 5.0),
-              child: Icon(
-                Icons.search,
-                size: 24,
-                color: Color(0xFF6D6D6D),
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                onChanged: (value) {
-                  // Implement your search logic here
-                  // You can filter data based on the entered value
-                  // For example, if you have a list of items, you can filter them like this:
-                  // filteredItems = originalItems.where((item) => item.contains(value)).toList();
-                },
-                decoration: const InputDecoration(
-                  hintText: 'Search...',
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Color(0xFF6D6D6D),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class Consultation extends StatelessWidget {
-  const Consultation({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        // Navigasi ke halaman ConsultationScreen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ConsultationScreen(),
-          ),
-        );
-      },
-      child: Stack(
-        children: [
-          Container(
-            width: 182,
-            height: 222,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(19),
-              border: Border.all(
-                color: Colors.black,
-                width: 1,
-              ),
-              image: const DecorationImage(
-                image: AssetImage(
-                  'assets/images/background_widget.png',
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const Positioned(
-            left: 17,
-            top: 185,
-            child: Text(
-              'Consultation',
-              style: TextStyle(
-                fontFamily: 'Nunito',
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Threads extends StatelessWidget {
-  final double right;
-
-  const Threads({Key? key, required this.right}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      right: right,
-      top: 0,
-      child: InkWell(
-        onTap: () {
-          // Navigasi ke halaman Maintenance
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ThreadsScreen(),
-            ),
-          );
-        },
-        child: Stack(
-          children: [
-            Container(
-              width: 182,
-              height: 222,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(19),
-                border: Border.all(
-                  color: Colors.black,
-                  width: 1,
-                ),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/background_widget.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const Positioned(
-              right: 17,
-              top: 185,
-              child: Text(
-                'Threads',
-                style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CurrentHeartBeat extends StatelessWidget {
-  const CurrentHeartBeat({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      child: InkWell(
-        child: Stack(
-          children: [
-            Container(
-              width: 229.2,
-              height: 116.09,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(11.97),
-                border: Border.all(
-                  color: Colors.black,
-                  width: 1,
-                ),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/heartbeat.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class AiHelper extends StatelessWidget {
-  final double right;
-
-  const AiHelper({Key? key, required this.right}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      right: right,
-      top: 0,
-      child: InkWell(
-        onTap: () {
-          // Navigasi ke halaman Maintenance
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AIHelperr(),
-            ),
-          );
-        },
-        child: Container(
-          width: 143.05,
-          height: 115.95,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9.92),
-            border: Border.all(
-              color: Colors.black,
-              width: 0.522278,
-            ),
-            image: const DecorationImage(
-              image: AssetImage('assets/images/background_widget.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: const Center(
-            child: Text(
-              'AI Helper',
-              style: TextStyle(
-                fontFamily: 'Nunito',
-                fontWeight: FontWeight.bold,
-                fontSize: 14.1463,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class NewArtikel extends StatelessWidget {
-  const NewArtikel({Key? key, Key? home}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      child: InkWell(
-        onTap: () {
-          // Navigasi ke halaman Maintenance
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const Maintenance(),
-            ),
-          );
-        },
-        child: Stack(
-          children: [
-            // Positioned to place the text "New Articles!" above the container
-            const Positioned(
-              left: 4,
-              top: 13,
-              child: SizedBox(
-                child: Text(
-                  'New Articles!',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-            // New Container below "New Articles!"
-            Container(
-              margin:
-                  const EdgeInsets.only(top: 40), // Adjust the margin as needed
-              width: max(500, 500),
-              height: 194,
-              decoration: BoxDecoration(
-                image: const DecorationImage(
-                  filterQuality: FilterQuality.low,
-                  image: AssetImage(
-                    'assets/images/news.png', // Update with the correct path
-                  ),
-                  fit: BoxFit.cover,
-                ),
-                border: Border.all(
-                  color: Colors.black,
-                  width: 1.2,
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class Volunteer extends StatelessWidget {
-  const Volunteer({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        // Navigasi ke halaman Maintenance
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Volunteers(),
-          ),
-        );
-      },
-      child: Stack(
-        children: [
-          Container(
-            width: 182,
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(19),
-              border: Border.all(
-                color: Colors.black,
-                width: 1,
-              ),
-              image: const DecorationImage(
-                image: AssetImage(
-                  'assets/images/background_widget.png',
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const Positioned(
-            left: 17,
-            top: 170,
-            child: Text(
-              'Volunteer',
-              style: TextStyle(
-                fontFamily: 'Nunito',
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MoodTracker extends StatelessWidget {
-  final double right;
-
-  const MoodTracker({Key? key, required this.right}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      right: right,
-      top: 0,
-      bottom: 0,
-      child: InkWell(
-        onTap: () {
-          // Navigasi ke halaman Maintenance
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const MoodTrackers(),
-            ),
-          );
-        },
-        child: Stack(
-          children: [
-            Container(
-              width: 182,
-              height: 290,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(19),
-                border: Border.all(
-                  color: Colors.black,
-                  width: 1,
-                ),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/background_widget.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const Positioned(
-              right: 17,
-              top: 170,
-              child: Text(
-                'Mood Tracker',
-                style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class BreatheAssistant extends StatelessWidget {
-  const BreatheAssistant({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        // Navigasi ke halaman Maintenance
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const BreatheAssistance(),
-          ),
-        );
-      },
-      child: Stack(
-        children: [
-          Container(
-            width: 182,
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(19),
-              border: Border.all(
-                color: Colors.black,
-                width: 1,
-              ),
-              image: const DecorationImage(
-                image: AssetImage(
-                  'assets/images/background_widget.png',
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const Positioned(
-            left: 17,
-            top: 170,
-            child: Text(
-              'Breathe Assistant',
-              style: TextStyle(
-                fontFamily: 'Nunito',
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomerService extends StatelessWidget {
-  final double right;
-
-  const CustomerService({Key? key, required this.right}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      right: right,
-      top: 0,
-      bottom: 0,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const CustServ(),
-            ),
-          );
-        },
-        child: Stack(
-          children: [
-            Container(
-              width: 182,
-              height: 290,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(19),
-                border: Border.all(
-                  color: Colors.black,
-                  width: 1,
-                ),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/background_widget.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const Positioned(
-              right: 17,
-              top: 170,
-              child: Text(
-                'Customer Service',
-                style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class FirstView extends StatelessWidget {
-  const FirstView({Key? key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white, // Set the background color here
-      child: Stack(
-        children: [
-          Profile(),
-          Calendar(),
-          Welcome(),
-        ],
-      ),
-    );
-  }
-}
-
-class MiddleView extends StatelessWidget {
-  const MiddleView({Key? key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white, // Set the background color here
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                height: 0,
-              ),
-              SearchBar(),
-
-              // space between search bar to the next content
-              SizedBox(
-                height: 20,
-              ),
-              Stack(
-                children: [
-                  Consultation(),
-                  Threads(right: 0),
-                ],
-              ),
-              // space between consultation and threads to the next content
-              SizedBox(
-                height: 20,
-              ),
-              Stack(
-                children: [
-                  CurrentHeartBeat(),
-                  AiHelper(right: 0),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              NewArtikel(),
-              // space between current heartbeat and ai helper to the next content
-              SizedBox(
-                height: 20,
-              ),
-              Stack(
-                children: [
-                  Volunteer(),
-                  MoodTracker(right: 0),
-                ],
-              ),
-
-              SizedBox(
-                height: 20,
-              ),
-              Stack(
-                children: [
-                  BreatheAssistant(),
-                  CustomerService(right: 0),
-                ],
-              ),
-
-              SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _pages = [
-    FirstView(),
-    FloralGuideScreen(),
-    MessageScreen(),
-    ProfileScreen(),
+  // `late final` + criado uma única vez em initState: garante que os widgets
+  // das abas nunca sejam recriados quando a HomePage der rebuild (ex: ao
+  // trocar de aba e chamar setState), preservando o estado interno de cada
+  // uma dentro do IndexedStack.
+  late final List<Widget> _tabs;
+
+  static const List<_NavItemData> _navItems = [
+    _NavItemData(icon: Icons.home_rounded, label: 'Home'),
+    _NavItemData(icon: Icons.spa_rounded, label: 'Florais'),
+    _NavItemData(icon: Icons.chat_bubble_rounded, label: 'Mensagens'),
+    _NavItemData(icon: Icons.person_rounded, label: 'Perfil'),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabs = const [
+      _HomeTab(),
+      FloralGuideScreen(),
+      MessageScreen(),
+      ProfileScreen(),
+    ];
+  }
+
+  void _onNavTap(int index) {
+    if (index == _selectedIndex) return;
+    setState(() => _selectedIndex = index);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Set the background color of the scaffold
+      backgroundColor: const Color(0xFFF7F7F9),
+      // extendBody: o conteúdo das abas pode desenhar por trás da área da
+      // navbar flutuante, reforçando o efeito "pill" sobreposto.
+      extendBody: true,
       body: Stack(
         children: [
-          _pages[_selectedIndex],
-          Positioned(
-            top: 115,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SingleChildScrollView(
-              child: MiddleView(),
-            ),
+          // As 4 abas ficam todas construídas o tempo todo; só a visível é
+          // exibida. Isso é o que evita reconstrução/perda de estado.
+          IndexedStack(
+            index: _selectedIndex,
+            children: _tabs,
           ),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        height: 135,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(0, 'Home', Icons.home),
-              _buildNavItem(1, 'Florais', Icons.spa_outlined),
-              _buildNavItem(2, 'Message', Icons.message),
-              _buildNavItem(3, 'Profile', Icons.person),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(int index, String label, IconData iconData) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-
-        // Navigate to the corresponding page
-        switch (index) {
-          case 1:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const FloralGuideScreen()),
-            );
-            break;
-          case 2:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MessageScreen()),
-            );
-            break;
-          case 3:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfileScreen()),
-            );
-            break;
-        }
-      },
-      child: Column(
-        children: [
-          Icon(
-            iconData,
-            size: 24,
-            color: _selectedIndex == index ? Colors.white : Colors.grey,
-          ),
-          SizedBox(height: 5),
-          Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 9.20952,
-              color: _selectedIndex == index ? Colors.white : Colors.grey,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _PillNavBar(
+              items: _navItems,
+              selectedIndex: _selectedIndex,
+              onTap: _onNavTap,
             ),
           ),
         ],
@@ -882,8 +81,553 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-void main() {
-  runApp(const MaterialApp(
-    home: HomeScreen(),
-  ));
+class _NavItemData {
+  final IconData icon;
+  final String label;
+  const _NavItemData({required this.icon, required this.label});
+}
+
+/// Barra de navegação flutuante em formato de pílula (estilo "floating pill").
+///
+/// Fica sempre visível (não é `bottomNavigationBar`, então nunca é
+/// substituída ou some ao trocar de aba) e destaca o item ativo com uma
+/// cápsula preta que desliza suavemente entre as opções.
+class _PillNavBar extends StatelessWidget {
+  final List<_NavItemData> items;
+  final int selectedIndex;
+  final ValueChanged<int> onTap;
+
+  const _PillNavBar({
+    required this.items,
+    required this.selectedIndex,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      minimum: const EdgeInsets.only(bottom: 16),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 32),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.92),
+          borderRadius: BorderRadius.circular(40),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.18),
+              blurRadius: 24,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(items.length, (index) {
+            final bool isSelected = index == selectedIndex;
+            return _PillNavItem(
+              data: items[index],
+              isSelected: isSelected,
+              onTap: () => onTap(index),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+class _PillNavItem extends StatelessWidget {
+  final _NavItemData data;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _PillNavItem({
+    required this.data,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 260),
+        curve: Curves.easeOutCubic,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        padding: EdgeInsets.symmetric(
+          horizontal: isSelected ? 18 : 12,
+          vertical: 10,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              data.icon,
+              size: 22,
+              color: isSelected ? Colors.black : Colors.white70,
+            ),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              child: isSelected
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(
+                        data.label,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Aba Home: saudação, data e carrossel de cards estilo iOS.
+// ---------------------------------------------------------------------------
+
+class _HomeTab extends StatefulWidget {
+  const _HomeTab({Key? key}) : super(key: key);
+
+  @override
+  State<_HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<_HomeTab> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      bottom: false,
+      child: CustomScrollView(
+        // Padding extra embaixo pra nenhum conteúdo ficar escondido atrás
+        // da navbar flutuante (por causa do extendBody: true na Home).
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              child: _HomeHeader(),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 28),
+          ),
+          SliverToBoxAdapter(
+            child: _AppleStyleCarousel(cards: _homeInfoCards),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 140),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Saudação + data atual formatada em português.
+class _HomeHeader extends StatelessWidget {
+  const _HomeHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Olá, Terapeuta',
+          style: TextStyle(
+            fontFamily: 'Nunito-Bold',
+            fontWeight: FontWeight.bold,
+            fontSize: 26,
+            color: Colors.black,
+            letterSpacing: -0.4,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          _formatarDataAtual(DateTime.now()),
+          style: TextStyle(
+            fontFamily: 'Nunito-Regular',
+            fontSize: 15,
+            color: Colors.black.withOpacity(0.5),
+            letterSpacing: -0.1,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+const List<String> _diasDaSemanaPt = [
+  'Domingo',
+  'Segunda-feira',
+  'Terça-feira',
+  'Quarta-feira',
+  'Quinta-feira',
+  'Sexta-feira',
+  'Sábado',
+];
+
+const List<String> _mesesPt = [
+  'Janeiro',
+  'Fevereiro',
+  'Março',
+  'Abril',
+  'Maio',
+  'Junho',
+  'Julho',
+  'Agosto',
+  'Setembro',
+  'Outubro',
+  'Novembro',
+  'Dezembro',
+];
+
+/// Formata a data como "Quarta-feira, 2 de Setembro de 2026", sem depender
+/// do pacote `intl` (não estava nas dependências do projeto).
+String _formatarDataAtual(DateTime data) {
+  // DateTime.weekday: 1 = segunda ... 7 = domingo. `_diasDaSemanaPt` começa
+  // no domingo (índice 0), então fazemos o módulo pra alinhar os dois.
+  final diaSemana = _diasDaSemanaPt[data.weekday % 7];
+  final mes = _mesesPt[data.month - 1];
+  return '$diaSemana, ${data.day} de $mes de ${data.year}';
+}
+
+/// Conteúdo de cada card do carrossel + estilo visual.
+class HomeInfoCardData {
+  final String title;
+  final String subtitle;
+  final String description;
+  final IconData icon;
+  final List<Color> gradient;
+  final String? imageAsset;
+
+  const HomeInfoCardData({
+    required this.title,
+    required this.subtitle,
+    required this.description,
+    required this.icon,
+    required this.gradient,
+    this.imageAsset,
+  });
+}
+
+final List<HomeInfoCardData> _homeInfoCards = [
+  const HomeInfoCardData(
+    title: 'Como Agem os Florais',
+    subtitle: 'Ressonância vibracional',
+    description:
+        'Os florais atuam pelo princípio da ressonância vibracional: cada '
+        'essência carrega um padrão sutil de energia que dialoga com o '
+        'campo emocional da pessoa, ajudando a reequilibrar estados como '
+        'medo, tristeza ou insegurança — sem agir pela via química, mas '
+        'pela via energética e sutil.',
+    icon: Icons.spa_rounded,
+    gradient: [Color(0xFF3AAFA9), Color(0xFF16697A)],
+  ),
+  const HomeInfoCardData(
+    title: 'Guia de Dosagem',
+    subtitle: 'Proporções e frequência',
+    description:
+        'Frasco de tratamento: geralmente 2 a 4 gotas do(s) floral(is) '
+        'escolhido(s) em um frasco de 30 ml com água (mais um conservante, '
+        'se necessário). Uso diário: 4 gotas do frasco, 4 vezes ao dia. '
+        'Em situações agudas, as gotas podem ser repetidas com mais '
+        'frequência, direto na língua ou diluídas em um pouco de água.',
+    icon: Icons.water_drop_rounded,
+    gradient: [Color(0xFFE08E45), Color(0xFFC96E12)],
+  ),
+  const HomeInfoCardData(
+    title: 'Métodos de Ajuda Holística',
+    subtitle: 'Escuta e ancoragem',
+    description:
+        'Além dos florais, a abordagem holística envolve escuta ativa e '
+        'acolhedora, técnicas de ancoragem no presente (respiração, '
+        'aterramento) e suporte emocional contínuo — tratando a pessoa de '
+        'forma integral, não apenas o sintoma pontual.',
+    icon: Icons.self_improvement_rounded,
+    gradient: [Color(0xFF7B6FD1), Color(0xFF4C3F91)],
+  ),
+];
+
+/// Carrossel horizontal estilo Apple: cards com bordas arredondadas
+/// elegantes, sombra suave, snapping por página e leve efeito de escala/
+/// profundidade nos cards vizinhos enquanto o usuário rola.
+class _AppleStyleCarousel extends StatefulWidget {
+  final List<HomeInfoCardData> cards;
+  const _AppleStyleCarousel({required this.cards});
+
+  @override
+  State<_AppleStyleCarousel> createState() => _AppleStyleCarouselState();
+}
+
+class _AppleStyleCarouselState extends State<_AppleStyleCarousel> {
+  late final PageController _controller;
+  double _page = 0;
+
+  static const double _viewportFraction = 0.82;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController(viewportFraction: _viewportFraction);
+    _controller.addListener(() {
+      setState(() => _page = _controller.page ?? 0);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _openDetails(HomeInfoCardData card) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => _CardDetailsSheet(card: card),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 210,
+      child: PageView.builder(
+        controller: _controller,
+        // PageView já entrega o efeito de "encaixe" (snapping) nativo do
+        // iOS; a física com bounce deixa a rolagem mais fluida/suave.
+        physics: const BouncingScrollPhysics(
+          parent: PageScrollPhysics(),
+        ),
+        padEnds: false,
+        itemCount: widget.cards.length,
+        itemBuilder: (context, index) {
+          final double delta = (_page - index).abs().clamp(0.0, 1.0);
+          // Card focado fica levemente maior e mais "à frente" — o mesmo
+          // efeito de profundidade usado em carrosséis estilo Apple.
+          final double scale = 1 - (delta * 0.10);
+          final double verticalShift = delta * 12;
+
+          return Padding(
+            padding: EdgeInsets.only(
+              left: index == 0 ? 24 : 8,
+              right: 8,
+            ),
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()
+                ..translate(0.0, verticalShift)
+                ..scale(scale),
+              child: _HomeInfoCard(
+                data: widget.cards[index],
+                onTap: () => _openDetails(widget.cards[index]),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _HomeInfoCard extends StatelessWidget {
+  final HomeInfoCardData data;
+  final VoidCallback onTap;
+
+  const _HomeInfoCard({required this.data, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Área visual dedicada à imagem/ícone do card. Se `imageAsset`
+            // for informado, a imagem é usada; caso contrário, cai num
+            // fundo em gradiente com um ícone ilustrativo — assim o card
+            // já funciona hoje e aceita imagens reais depois sem mudar
+            // a estrutura.
+            Expanded(
+              flex: 3,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (data.imageAsset != null)
+                    Image.asset(data.imageAsset!, fit: BoxFit.cover)
+                  else
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: data.gradient,
+                        ),
+                      ),
+                    ),
+                  Positioned(
+                    right: 14,
+                    bottom: -10,
+                    child: Icon(
+                      data.icon,
+                      size: 72,
+                      color: Colors.white.withOpacity(0.22),
+                    ),
+                  ),
+                  Positioned(
+                    left: 16,
+                    top: 14,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.22),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Icon(data.icon, size: 20, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      data.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: 'Nunito-Bold',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.5,
+                        color: Colors.black,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      data.subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'Nunito-Regular',
+                        fontSize: 12.5,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom sheet com o conteúdo completo do card, aberta ao tocar nele.
+class _CardDetailsSheet extends StatelessWidget {
+  final HomeInfoCardData card;
+  const _CardDetailsSheet({required this.card});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: card.gradient,
+                ),
+              ),
+              child: Icon(card.icon, color: Colors.white, size: 26),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              card.title,
+              style: const TextStyle(
+                fontFamily: 'Nunito-Bold',
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              card.description,
+              style: TextStyle(
+                fontFamily: 'Nunito-Regular',
+                fontSize: 15,
+                height: 1.5,
+                color: Colors.black.withOpacity(0.7),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
