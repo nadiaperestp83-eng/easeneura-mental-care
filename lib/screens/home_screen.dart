@@ -7,6 +7,7 @@ import 'package:ease_neura/widget_home/message_screen.dart';
 import 'package:ease_neura/widget_home/profile_screen.dart';
 import 'package:ease_neura/widget_home/thread_screen.dart';
 import 'package:ease_neura/widget_home/customer_services.dart';
+import 'package:ease_neura/screens/floral_guide_screen.dart';
 import 'package:ease_neura/widget_home/breathe_assistance_screen.dart';
 import 'package:ease_neura/widget_home/mood_tracker_screen.dart';
 import 'package:ease_neura/widget_home/volunteer_screen.dart';
@@ -781,7 +782,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const List<Widget> _pages = [
     FirstView(),
-    HistoryScreen(),
+    FloralGuideScreen(),
     MessageScreen(),
     ProfileScreen(),
   ];
@@ -819,7 +820,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(0, 'Home', Icons.home),
-              _buildNavItem(1, 'History', Icons.history),
+              _buildNavItem(1, 'Florais', Icons.spa_outlined),
               _buildNavItem(2, 'Message', Icons.message),
               _buildNavItem(3, 'Profile', Icons.person),
             ],
@@ -841,7 +842,7 @@ class _HomeScreenState extends State<HomeScreen> {
           case 1:
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HistoryScreen()),
+              MaterialPageRoute(builder: (context) => const FloralGuideScreen()),
             );
             break;
           case 2:
