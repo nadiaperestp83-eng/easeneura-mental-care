@@ -30,13 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  webview_flutter: ^2.0.14
-  http: ^0.13.3
-  html: ^0.15.4
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  google_sign_in: ^6.1.6
   flutter_rating_bar: ^4.0.0
   flutter_spinkit: ^5.2.0
   fluttertoast: ^8.0.8
@@ -102,3 +98,24 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  # Famílias já referenciadas em fontFamily: pelo código (mood_tracker_screen,
+  # history_screen, home_screen etc.) mas que nunca tinham sido registradas
+  # aqui — por isso caíam na fonte padrão do sistema mesmo com os .ttf já
+  # presentes em assets/fonts/.
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/NunitoRegular.ttf
+    - family: Nunito-Regular
+      fonts:
+        - asset: assets/fonts/NunitoRegular.ttf
+    - family: Nunito-Bold
+      fonts:
+        - asset: assets/fonts/NunitoBold.ttf
+          weight: 700
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/PoppinsRegular.ttf
+        - asset: assets/fonts/PoppinsSemiBold.ttf
+          weight: 600
