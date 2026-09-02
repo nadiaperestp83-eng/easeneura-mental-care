@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ease_neura/constants/layout_constants.dart';
 import 'package:ease_neura/data/floral_repository.dart';
 import 'package:ease_neura/models/floral_model.dart';
 import 'package:ease_neura/widgets/floral_card.dart';
@@ -59,41 +60,37 @@ class _FloralGuideScreenState extends State<FloralGuideScreen> {
     });
   }
 
-  // Mesmo padrão de AppBar usado em history_screen.dart e
-  // mood_tracker_screen.dart: rótulo "Menu" pequeno e cinza + título em
-  // negrito, alinhados à direita.
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      flexibleSpace: const Align(
-        alignment: Alignment.bottomRight,
-        child: Padding(
-          padding: EdgeInsets.only(right: 20, bottom: 14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'Menu',
-                style: TextStyle(
-                  color: Color(0xFF979797),
-                  fontSize: 11,
-                  fontFamily: 'Nunito-Regular',
-                ),
-              ),
-              SizedBox(height: 2),
-              Text(
-                'Guia de Florais',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Nunito-Bold',
-                ),
-              ),
-            ],
+  // Cabeçalho limpo, alinhado à esquerda, no mesmo padrão da Home
+  // (`_HomeHeader` em home_screen.dart): título em negrito seguido de uma
+  // linha de apoio, sem depender de um AppBar padrão (que jogava o texto
+  // pro canto errado e ficava espremido).
+  Widget _buildHeader() {
+    return const Padding(
+      padding: EdgeInsets.fromLTRB(24, 24, 24, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Guia de Florais',
+            style: TextStyle(
+              fontFamily: 'Nunito-Bold',
+              fontWeight: FontWeight.bold,
+              fontSize: 26,
+              color: Colors.black,
+              letterSpacing: -0.4,
+            ),
           ),
-        ),
+          SizedBox(height: 6),
+          Text(
+            'Consulta rápida por sentimento ou categoria',
+            style: TextStyle(
+              fontFamily: 'Nunito-Regular',
+              fontSize: 15,
+              color: Color(0x80000000),
+              letterSpacing: -0.1,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -104,45 +101,56 @@ class _FloralGuideScreenState extends State<FloralGuideScreen> {
 
     return Scaffold(
       backgroundColor: FloralColors.background,
-      appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-            child: _SearchBar(
-              controller: _searchController,
-              onChanged: (valor) => setState(() => _termoBusca = valor),
+      // Sem AppBar: o cabeçalho vive dentro do body, dentro de uma SafeArea,
+      // seguindo o mesmo padrão visual da Home.
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            _buildHeader(),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+              child: _SearchBar(
+                controller: _searchController,
+                onChanged: (valor) => setState(() => _termoBusca = valor),
+              ),
             ),
-          ),
-          SizedBox(
-            height: 40,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: _categorias.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
-              itemBuilder: (context, index) {
-                final categoria = _categorias[index];
-                final selecionada = _grupoSelecionado == categoria;
-                return _CategoriaChip(
-                  texto: categoria,
-                  selecionada: selecionada,
-                  onTap: () => _alternarCategoria(categoria),
-                );
-              },
+            SizedBox(
+              height: 40,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: _categorias.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                itemBuilder: (context, index) {
+                  final categoria = _categorias[index];
+                  final selecionada = _grupoSelecionado == categoria;
+                  return _CategoriaChip(
+                    texto: categoria,
+                    selecionada: selecionada,
+                    onTap: () => _alternarCategoria(categoria),
+                  );
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Expanded(
-            child: resultados.isEmpty
-                ? const _EstadoVazio()
-                : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                    itemCount: resultados.length,
-                    itemBuilder: (context, index) => FloralCard(floral: resultados[index]),
-                  ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            Expanded(
+              child: resultados.isEmpty
+                  ? const _EstadoVazio()
+                  : ListView.builder(
+                      // Padding inferior extra (kPillNavBarClearance) pra
+                      // garantir que o último card da lista sempre termine
+                      // acima da navbar flutuante, nunca escondido por ela.
+                      padding: const EdgeInsets.fromLTRB(
+                        16, 0, 16, kPillNavBarClearance,
+                      ),
+                      itemCount: resultados.length,
+                      itemBuilder: (context, index) => FloralCard(floral: resultados[index]),
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
