@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ease_neura/screens/home_screen.dart';
+import 'package:ease_neura/screens/home_screen.dart' show HomePage;
 
 void main() {
   runApp(const MyApp());
@@ -158,7 +158,7 @@ class SigninForm extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const HomeScreen(),
+        builder: (context) => const HomePage(),
       ),
     );
   }
