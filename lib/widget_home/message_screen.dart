@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ease_neura/constants/layout_constants.dart';
 
 class MessageScreen extends StatelessWidget {
   const MessageScreen({Key? key}) : super(key: key);
@@ -22,20 +23,31 @@ class MessageScreen extends StatelessWidget {
               )
             : null,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.all(8.0),
-              children: [
-                ChatMessage(isSentByMe: true, message: 'Hello!'),
-                ChatMessage(isSentByMe: false, message: 'Hi there!'),
-                // Add more messages as needed
-              ],
-            ),
+      // SafeArea + padding inferior (kPillNavBarClearance): esta tela vive
+      // como aba dentro do IndexedStack de HomePage, cuja navbar em pílula
+      // flutua por cima do conteúdo (Scaffold.extendBody: true). Sem esse
+      // espaço reservado, o campo "Type your message..." ficava totalmente
+      // coberto pela pílula.
+      body: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: kPillNavBarClearance),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.all(8.0),
+                  children: [
+                    ChatMessage(isSentByMe: true, message: 'Hello!'),
+                    ChatMessage(isSentByMe: false, message: 'Hi there!'),
+                    // Add more messages as needed
+                  ],
+                ),
+              ),
+              _buildInputField(context),
+            ],
           ),
-          _buildInputField(context),
-        ],
+        ),
       ),
     );
   }
@@ -44,8 +56,12 @@ class MessageScreen extends StatelessWidget {
     TextEditingController _messageController = TextEditingController();
 
     return Container(
-      padding: EdgeInsets.all(8.0),
-      color: Colors.black,
+      padding: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(24.0),
+      ),
       child: Row(
         children: [
           Expanded(
