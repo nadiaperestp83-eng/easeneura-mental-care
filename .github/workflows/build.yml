@@ -59,7 +59,14 @@ jobs:
         continue-on-error: true # remova esta linha quando os testes estiverem estáveis
 
       - name: Gerar APK de release
-        run: flutter build apk --release
+        # A chave nunca é escrita em nenhum arquivo do repositório: ela é
+        # injetada só nesta etapa, direto do GitHub Secrets, via
+        # --dart-define. Isso a compila dentro do binário do app, sem deixar
+        # rastro em texto puro no código-fonte ou nos logs do Actions
+        # (secrets do GitHub são automaticamente mascarados nos logs).
+        run: |
+          flutter build apk --release \
+            --dart-define=OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
 
       - name: Publicar o APK como artefato do workflow
         uses: actions/upload-artifact@v4
