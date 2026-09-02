@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:ease_neura/constants/layout_constants.dart';
 import 'package:ease_neura/screens/floral_guide_screen.dart';
 import 'package:ease_neura/widget_home/message_screen.dart';
 import 'package:ease_neura/widget_home/profile_screen.dart';
@@ -91,7 +93,11 @@ class _NavItemData {
 ///
 /// Fica sempre visível (não é `bottomNavigationBar`, então nunca é
 /// substituída ou some ao trocar de aba) e destaca o item ativo com uma
-/// cápsula preta que desliza suavemente entre as opções.
+/// cápsula clara que desliza suavemente entre as opções.
+///
+/// Visual leve e minimalista: vidro fosco translúcido em tom claro (em vez
+/// do bloco preto pesado anterior), com borda sutil e ícones escuros, para
+/// se integrar ao fundo claro do app.
 class _PillNavBar extends StatelessWidget {
   final List<_NavItemData> items;
   final int selectedIndex;
@@ -106,31 +112,43 @@ class _PillNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      minimum: const EdgeInsets.only(bottom: 16),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 32),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.92),
+      minimum: const EdgeInsets.only(bottom: kPillNavBarBottomInset),
+      child: Padding(
+        // Margem horizontal fica no Padding (fora do ClipRRect) pra que o
+        // blur e o recorte arredondado abracem só a área da pílula em si,
+        // sem criar um halo borrado mais largo do que ela.
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(40),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.18),
-              blurRadius: 24,
-              offset: const Offset(0, 10),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.78),
+                borderRadius: BorderRadius.circular(40),
+                border: Border.all(color: Colors.black.withOpacity(0.06)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: List.generate(items.length, (index) {
+                  final bool isSelected = index == selectedIndex;
+                  return _PillNavItem(
+                    data: items[index],
+                    isSelected: isSelected,
+                    onTap: () => onTap(index),
+                  );
+                }),
+              ),
             ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(items.length, (index) {
-            final bool isSelected = index == selectedIndex;
-            return _PillNavItem(
-              data: items[index],
-              isSelected: isSelected,
-              onTap: () => onTap(index),
-            );
-          }),
+          ),
         ),
       ),
     );
@@ -162,7 +180,9 @@ class _PillNavItem extends StatelessWidget {
           vertical: 10,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
+          color: isSelected
+              ? const Color(0xFF16697A).withOpacity(0.12)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
@@ -171,7 +191,9 @@ class _PillNavItem extends StatelessWidget {
             Icon(
               data.icon,
               size: 22,
-              color: isSelected ? Colors.black : Colors.white70,
+              color: isSelected
+                  ? const Color(0xFF16697A)
+                  : Colors.black.withOpacity(0.4),
             ),
             AnimatedSize(
               duration: const Duration(milliseconds: 220),
@@ -185,7 +207,7 @@ class _PillNavItem extends StatelessWidget {
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
-                          color: Colors.black,
+                          color: Color(0xFF16697A),
                         ),
                       ),
                     )
@@ -231,7 +253,7 @@ class _HomeTabState extends State<_HomeTab> {
             child: _AppleStyleCarousel(cards: _homeInfoCards),
           ),
           const SliverToBoxAdapter(
-            child: SizedBox(height: 140),
+            child: SizedBox(height: kPillNavBarClearance + 24),
           ),
         ],
       ),
